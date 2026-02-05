@@ -4,6 +4,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const tabs = [
   { label: "Dashboard", href: "/app" },
@@ -16,7 +17,7 @@ const tabs = [
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         <TopBar />
         <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
       </div>
@@ -35,10 +36,17 @@ function TopBar() {
   };
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 h-14">
-        <Link href="/app" className="text-lg font-bold text-blue-600 shrink-0">
-          Painterflow
+    <header className="border-b border-gray-200">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 h-16">
+        <Link href="/app" className="flex items-center gap-2 shrink-0">
+          <Image
+            src="/logo.png"
+            alt="Painterflow"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+          />
+          <span className="text-lg font-semibold text-white">Painterflow</span>
         </Link>
 
         <nav className="flex items-center gap-1 overflow-x-auto mx-4">

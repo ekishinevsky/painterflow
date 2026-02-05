@@ -1,29 +1,37 @@
 import Link from "next/link";
+import Image from "next/image";
 
 function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-neutral-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-xl font-bold text-blue-600">
-            Painterflow
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/logo.png"
+              alt="Painterflow"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
+            <span className="text-xl font-semibold text-white">Painterflow</span>
           </Link>
           <div className="flex items-center gap-6">
             <Link
               href="/features"
-              className="text-sm text-gray-600 hover:text-gray-900 hidden sm:block"
+              className="text-sm text-neutral-400 hover:text-white hidden sm:block transition-colors"
             >
               Features
             </Link>
             <Link
               href="/pricing"
-              className="text-sm text-gray-600 hover:text-gray-900 hidden sm:block"
+              className="text-sm text-neutral-400 hover:text-white hidden sm:block transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="/login"
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              className="text-sm font-medium text-green-500 hover:text-green-400 transition-colors"
             >
               Log In
             </Link>
@@ -36,27 +44,27 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-blue-50 to-white">
+    <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
           Quotes & Notes.
           <br />
-          <span className="text-blue-600">Built for Painters.</span>
+          <span className="text-green-500">Built for Painters.</span>
         </h1>
-        <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto">
           Create professional estimates on-site, keep customer notes organized,
           and close more jobs—all from your phone.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/signup"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-colors"
           >
             Start Free
           </Link>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-colors"
           >
             Log In
           </Link>
@@ -68,20 +76,20 @@ function Hero() {
 
 function SocialProof() {
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
+    <section className="py-12 px-4 sm:px-6 lg:px-8 border-y border-neutral-800">
       <div className="max-w-4xl mx-auto text-center">
-        <p className="text-sm text-gray-500 uppercase tracking-wide font-medium">
+        <p className="text-sm text-neutral-500 uppercase tracking-wide font-medium">
           Trusted by painting contractors across the country
         </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-gray-400">
-          <span className="text-2xl font-bold text-gray-700">500+</span>
-          <span className="text-sm">Active Users</span>
-          <span className="text-gray-300">|</span>
-          <span className="text-2xl font-bold text-gray-700">$2M+</span>
-          <span className="text-sm">Quotes Sent</span>
-          <span className="text-gray-300">|</span>
-          <span className="text-2xl font-bold text-gray-700">4.9</span>
-          <span className="text-sm">App Rating</span>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <span className="text-2xl font-bold text-white">500+</span>
+          <span className="text-sm text-neutral-400">Active Users</span>
+          <span className="text-neutral-700">|</span>
+          <span className="text-2xl font-bold text-white">$2M+</span>
+          <span className="text-sm text-neutral-400">Quotes Sent</span>
+          <span className="text-neutral-700">|</span>
+          <span className="text-2xl font-bold text-white">4.9</span>
+          <span className="text-sm text-neutral-400">App Rating</span>
         </div>
       </div>
     </section>
@@ -113,22 +121,22 @@ function HowItWorks() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white">
           How It Works
         </h2>
-        <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+        <p className="mt-4 text-center text-neutral-400 max-w-2xl mx-auto">
           From walkthrough to signed contract in three simple steps.
         </p>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((item) => (
             <div key={item.step} className="text-center">
-              <div className="w-12 h-12 mx-auto flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-xl">
+              <div className="w-12 h-12 mx-auto flex items-center justify-center rounded-full bg-green-500/20 text-green-500 font-bold text-xl">
                 {item.step}
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-gray-900">
+              <h3 className="mt-6 text-xl font-semibold text-white">
                 {item.title}
               </h3>
-              <p className="mt-3 text-gray-600">{item.description}</p>
+              <p className="mt-3 text-neutral-400">{item.description}</p>
             </div>
           ))}
         </div>
@@ -178,21 +186,21 @@ function Features() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white">
           Everything You Need on the Job
         </h2>
-        <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+        <p className="mt-4 text-center text-neutral-400 max-w-2xl mx-auto">
           Tools built specifically for painting contractors, not generic
           business software.
         </p>
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature) => (
-            <div key={feature.title} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-100">
+            <div key={feature.title} className="bg-neutral-900 p-6 rounded-xl border border-neutral-800">
+              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-green-500/20">
                 <svg
-                  className="w-5 h-5 text-blue-600"
+                  className="w-5 h-5 text-green-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -205,10 +213,10 @@ function Features() {
                   />
                 </svg>
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">
+              <h3 className="mt-4 text-lg font-semibold text-white">
                 {feature.title}
               </h3>
-              <p className="mt-2 text-gray-600 text-sm">{feature.description}</p>
+              <p className="mt-2 text-neutral-400 text-sm">{feature.description}</p>
             </div>
           ))}
         </div>
@@ -221,19 +229,19 @@ function Pricing() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white">
           Simple, Honest Pricing
         </h2>
-        <p className="mt-4 text-gray-600">
+        <p className="mt-4 text-neutral-400">
           One plan. Everything included. No surprises.
         </p>
-        <div className="mt-12 bg-white border-2 border-blue-600 rounded-2xl p-8 shadow-lg">
-          <p className="text-sm font-medium text-blue-600 uppercase tracking-wide">
+        <div className="mt-12 bg-neutral-900 border-2 border-green-500 rounded-2xl p-8">
+          <p className="text-sm font-medium text-green-500 uppercase tracking-wide">
             Pro Plan
           </p>
           <div className="mt-4 flex items-baseline justify-center gap-2">
-            <span className="text-5xl font-bold text-gray-900">$29</span>
-            <span className="text-gray-500">/month</span>
+            <span className="text-5xl font-bold text-white">$29</span>
+            <span className="text-neutral-500">/month</span>
           </div>
           <ul className="mt-8 space-y-4 text-left max-w-xs mx-auto">
             {[
@@ -244,7 +252,7 @@ function Pricing() {
               "Email & text delivery",
               "Priority support",
             ].map((item) => (
-              <li key={item} className="flex items-center gap-3 text-gray-700">
+              <li key={item} className="flex items-center gap-3 text-neutral-300">
                 <svg
                   className="w-5 h-5 text-green-500 flex-shrink-0"
                   fill="none"
@@ -264,11 +272,11 @@ function Pricing() {
           </ul>
           <Link
             href="/signup"
-            className="mt-8 inline-flex items-center justify-center w-full px-8 py-4 text-base font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            className="mt-8 inline-flex items-center justify-center w-full px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-colors"
           >
             Start Your Free Trial
           </Link>
-          <p className="mt-4 text-sm text-gray-500">
+          <p className="mt-4 text-sm text-neutral-500">
             14-day free trial. No credit card required.
           </p>
         </div>
@@ -302,21 +310,21 @@ function FAQ() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white">
           Questions? We&apos;ve Got Answers.
         </h2>
         <div className="mt-12 space-y-6">
           {faqs.map((faq) => (
             <div
               key={faq.question}
-              className="bg-white p-6 rounded-xl shadow-sm border border-gray-100"
+              className="bg-neutral-900 p-6 rounded-xl border border-neutral-800"
             >
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 {faq.question}
               </h3>
-              <p className="mt-3 text-gray-600">{faq.answer}</p>
+              <p className="mt-3 text-neutral-400">{faq.answer}</p>
             </div>
           ))}
         </div>
@@ -327,24 +335,24 @@ function FAQ() {
 
 function FinalCTA() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-blue-600">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-green-500">
       <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold text-white">
+        <h2 className="text-3xl sm:text-4xl font-bold text-black">
           Ready to Win More Jobs?
         </h2>
-        <p className="mt-4 text-blue-100 text-lg">
+        <p className="mt-4 text-green-900 text-lg">
           Join hundreds of painting contractors who save time and close more
           deals with Painterflow.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/signup"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-blue-600 bg-white rounded-lg hover:bg-blue-50 transition-colors"
+            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-green-500 bg-black rounded-lg hover:bg-neutral-900 transition-colors"
           >
             Start Your Free Trial
           </Link>
         </div>
-        <p className="mt-6 text-blue-200 text-sm">
+        <p className="mt-6 text-green-800 text-sm">
           No credit card required. Get started in 2 minutes.
         </p>
       </div>
@@ -354,33 +362,42 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900">
+    <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-black border-t border-neutral-800">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xl font-bold text-white">Painterflow</p>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/logo.png"
+              alt="Painterflow"
+              width={24}
+              height={24}
+              className="h-6 w-6 object-contain"
+            />
+            <span className="text-xl font-semibold text-white">Painterflow</span>
+          </div>
           <div className="flex gap-6">
             <Link
               href="/features"
-              className="text-sm text-gray-400 hover:text-white"
+              className="text-sm text-neutral-400 hover:text-white transition-colors"
             >
               Features
             </Link>
             <Link
               href="/pricing"
-              className="text-sm text-gray-400 hover:text-white"
+              className="text-sm text-neutral-400 hover:text-white transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="/login"
-              className="text-sm text-gray-400 hover:text-white"
+              className="text-sm text-neutral-400 hover:text-white transition-colors"
             >
               Log In
             </Link>
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-          <p className="text-sm text-gray-500">
+        <div className="mt-8 pt-8 border-t border-neutral-800 text-center">
+          <p className="text-sm text-neutral-500">
             &copy; {new Date().getFullYear()} Painterflow. All rights reserved.
           </p>
         </div>
@@ -391,7 +408,7 @@ function Footer() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
       <Navbar />
       <main>
         <Hero />
