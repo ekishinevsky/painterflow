@@ -18,7 +18,7 @@ interface Estimate {
   id: string;
   total: number;
   created_at: string;
-  customers: { name: string } | null;
+  customers: { name: string }[] | { name: string } | null;
 }
 
 export default function EstimatesPage() {
@@ -230,7 +230,7 @@ export default function EstimatesPage() {
           <div key={est.id} className="rounded-md border border-gray-200 bg-white px-4 py-3 flex items-center justify-between">
             <div>
               <p className="font-medium text-gray-900">
-                {est.customers?.name ?? "Unknown customer"}
+                {(Array.isArray(est.customers) ? est.customers[0]?.name : est.customers?.name) ?? "Unknown customer"}
               </p>
               <p className="text-sm text-gray-500">
                 {new Date(est.created_at).toLocaleDateString()}
