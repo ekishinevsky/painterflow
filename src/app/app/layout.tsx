@@ -10,6 +10,7 @@ const tabs = [
   { label: "Customers", href: "/app/customers" },
   { label: "Estimates", href: "/app/estimates" },
   { label: "Calendar", href: "/app/calendar" },
+  { label: "Jobs", href: "/app/jobs" },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
