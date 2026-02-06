@@ -48,7 +48,7 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-// Paint brush stroke component - sweeps across screen on load
+// Paint brush stroke component - organic brush that paints across screen
 function PaintBrushStroke() {
   const [animated, setAnimated] = useState(false);
 
@@ -58,28 +58,133 @@ function PaintBrushStroke() {
   }, []);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {/* Subtle glow behind the stroke */}
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-32"
-        style={{
-          background: "radial-gradient(ellipse at center, rgba(34, 197, 94, 0.3) 0%, transparent 70%)",
-          filter: "blur(30px)",
-          opacity: animated ? 1 : 0,
-          transition: "opacity 0.8s ease-out 0.3s",
-        }}
-      />
-      {/* Actual brush stroke image */}
-      <img
-        src="/brush-stroke.png"
-        alt=""
-        className="absolute left-1/2 top-1/2 -translate-y-1/2 h-24 sm:h-32 lg:h-40 w-auto max-w-[90vw] object-contain"
-        style={{
-          transform: `translateX(${animated ? "-50%" : "-150%"}) translateY(-50%) rotate(-3deg)`,
-          transition: "transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          filter: "drop-shadow(0 4px 20px rgba(34, 197, 94, 0.4))",
-        }}
-      />
+    <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
+      <svg
+        viewBox="0 0 1200 120"
+        className="w-[95vw] h-auto max-h-32"
+        style={{ transform: "rotate(-2deg)" }}
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          {/* Gradient for the brush stroke */}
+          <linearGradient id="brushGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#15803d" />
+            <stop offset="30%" stopColor="#22c55e" />
+            <stop offset="50%" stopColor="#16a34a" />
+            <stop offset="70%" stopColor="#22c55e" />
+            <stop offset="100%" stopColor="#15803d" />
+          </linearGradient>
+          {/* Filter for paint texture */}
+          <filter id="brushTexture" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          {/* Glow effect */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          {/* Clip path that reveals the stroke */}
+          <clipPath id="brushReveal">
+            <rect
+              x="-100"
+              y="-50"
+              width="1400"
+              height="220"
+              style={{
+                transform: animated ? "translateX(0)" : "translateX(-1400px)",
+                transition: "transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
+            />
+          </clipPath>
+        </defs>
+
+        {/* Background glow */}
+        <g clipPath="url(#brushReveal)">
+          <path
+            d="M0,60
+               Q50,20 150,55
+               T300,50
+               Q400,70 500,45
+               T700,55
+               Q850,35 950,60
+               T1100,50
+               Q1150,65 1200,55"
+            fill="none"
+            stroke="rgba(34, 197, 94, 0.4)"
+            strokeWidth="60"
+            strokeLinecap="round"
+            filter="url(#glow)"
+          />
+        </g>
+
+        {/* Main brush stroke - organic shape */}
+        <g clipPath="url(#brushReveal)" filter="url(#brushTexture)">
+          {/* Base thick stroke */}
+          <path
+            d="M-20,60
+               C30,25 80,75 150,50
+               S250,70 350,45
+               S480,65 550,40
+               S680,70 750,50
+               S880,30 950,55
+               S1080,45 1150,60
+               L1220,55"
+            fill="none"
+            stroke="url(#brushGradient)"
+            strokeWidth="45"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Darker undertone */}
+          <path
+            d="M-10,65
+               C40,35 90,80 160,55
+               S260,72 360,48
+               S490,68 560,45
+               S690,72 760,52
+               S890,35 960,58
+               S1090,48 1160,62"
+            fill="none"
+            stroke="#15803d"
+            strokeWidth="25"
+            strokeLinecap="round"
+            opacity="0.6"
+          />
+
+          {/* Bright highlight */}
+          <path
+            d="M30,55
+               C70,40 120,65 180,48
+               S300,60 380,42
+               S520,58 590,40
+               S720,62 790,48
+               S920,38 990,52
+               S1100,45 1170,55"
+            fill="none"
+            stroke="#4ade80"
+            strokeWidth="12"
+            strokeLinecap="round"
+            opacity="0.8"
+          />
+        </g>
+
+        {/* Splatter dots */}
+        <g clipPath="url(#brushReveal)">
+          <circle cx="180" cy="30" r="4" fill="#22c55e" opacity="0.7" />
+          <circle cx="350" cy="85" r="3" fill="#16a34a" opacity="0.6" />
+          <circle cx="520" cy="25" r="5" fill="#22c55e" opacity="0.5" />
+          <circle cx="680" cy="90" r="3" fill="#15803d" opacity="0.7" />
+          <circle cx="850" cy="28" r="4" fill="#4ade80" opacity="0.6" />
+          <circle cx="1020" cy="88" r="3" fill="#22c55e" opacity="0.5" />
+          <ellipse cx="420" cy="92" rx="8" ry="3" fill="#16a34a" opacity="0.4" />
+          <ellipse cx="780" cy="22" rx="6" ry="2" fill="#22c55e" opacity="0.5" />
+        </g>
+      </svg>
     </div>
   );
 }
