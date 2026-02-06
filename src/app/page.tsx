@@ -54,56 +54,27 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
     <div className="relative inline-block p-8 sm:p-12">
       {/* CSS for the racing animation */}
       <style jsx>{`
-        @keyframes race {
+        @keyframes drawBorder {
           0% {
-            stroke-dashoffset: 2000;
-          }
-          30% {
-            stroke-dashoffset: 0;
-          }
-          35% {
-            stroke-dashoffset: 0;
-          }
-          65% {
-            stroke-dashoffset: -2000;
-          }
-          70% {
-            stroke-dashoffset: -2000;
+            stroke-dashoffset: 6000;
           }
           100% {
-            stroke-dashoffset: -4000;
+            stroke-dashoffset: 0;
           }
         }
-        @keyframes fadeIn {
-          0%, 90% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
-        .racing-border {
-          animation: race 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-        .final-border {
-          opacity: 0;
-          animation: fadeIn 2.5s ease-out forwards;
+        .draw-border {
+          animation: drawBorder 3s linear forwards;
         }
       `}</style>
 
-      {/* SVG border that races around */}
+      {/* SVG border that draws around */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ overflow: "visible" }}
       >
         <defs>
-          <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#4ade80" />
-            <stop offset="50%" stopColor="#22c55e" />
-            <stop offset="100%" stopColor="#16a34a" />
-          </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feGaussianBlur stdDeviation="6" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -111,62 +82,36 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
           </filter>
         </defs>
 
-        {/* Racing glow layer */}
+        {/* Glow layer */}
         <rect
           x="0"
           y="0"
           width="100%"
           height="100%"
           fill="none"
-          stroke="rgba(34, 197, 94, 0.4)"
-          strokeWidth="6"
+          stroke="#22c55e"
+          strokeWidth="8"
           rx="16"
           ry="16"
           filter="url(#glow)"
-          className="racing-border"
+          opacity="0.5"
+          className="draw-border"
           style={{ strokeDasharray: 2000 }}
         />
 
-        {/* Racing main border */}
+        {/* Main border */}
         <rect
           x="0"
           y="0"
           width="100%"
           height="100%"
           fill="none"
-          stroke="url(#borderGradient)"
+          stroke="#22c55e"
           strokeWidth="2"
           rx="16"
           ry="16"
-          className="racing-border"
+          className="draw-border"
           style={{ strokeDasharray: 2000 }}
-        />
-
-        {/* Final static border that fades in */}
-        <rect
-          x="0"
-          y="0"
-          width="100%"
-          height="100%"
-          fill="none"
-          stroke="url(#borderGradient)"
-          strokeWidth="2"
-          rx="16"
-          ry="16"
-          className="final-border"
-        />
-        <rect
-          x="0"
-          y="0"
-          width="100%"
-          height="100%"
-          fill="none"
-          stroke="rgba(34, 197, 94, 0.3)"
-          strokeWidth="4"
-          rx="16"
-          ry="16"
-          filter="url(#glow)"
-          className="final-border"
         />
       </svg>
 
