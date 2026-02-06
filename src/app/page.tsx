@@ -77,93 +77,63 @@ function ScrollingPaintRoller() {
   if (!mounted) return null;
 
   const scrollProgress = Math.min(scrollY / maxScroll, 1);
-  const rollerRotation = scrollY * 0.5; // Rotate based on scroll
-  const rollerY = 100 + scrollProgress * (viewportHeight - 250); // Move down the viewport
+  const rollerRotation = -scrollY * 0.3; // Negative = rolling down the wall
+  const rollerY = 100 + scrollProgress * (viewportHeight - 200);
 
   return (
     <div
-      className="fixed right-4 sm:right-8 lg:right-12 pointer-events-none z-40 hidden md:block"
+      className="fixed right-6 sm:right-10 lg:right-16 pointer-events-none z-40 hidden md:block"
       style={{
         top: `${rollerY}px`,
         transition: "top 0.1s ease-out",
       }}
     >
       <svg
-        width="100"
-        height="160"
-        viewBox="0 0 100 160"
+        width="80"
+        height="140"
+        viewBox="0 0 80 140"
         fill="none"
         style={{
-          filter: "drop-shadow(0 0 12px rgba(34, 197, 94, 0.4))",
+          filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.3))",
         }}
       >
-        {/* Roller cylinder - horizontal at top */}
-        <g style={{ transform: `rotate(${rollerRotation}deg)`, transformOrigin: "50px 20px" }}>
-          {/* Outer roller shape */}
+        {/* Roller cylinder */}
+        <g style={{ transform: `rotate(${rollerRotation}deg)`, transformOrigin: "40px 18px" }}>
           <rect
-            x="10"
-            y="8"
-            width="80"
+            x="8"
+            y="6"
+            width="64"
             height="24"
             rx="12"
             stroke="#22c55e"
             strokeWidth="2"
             fill="none"
           />
-          {/* Inner roller texture lines */}
-          <line x1="25" y1="10" x2="25" y2="30" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-          <line x1="40" y1="10" x2="40" y2="30" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-          <line x1="55" y1="10" x2="55" y2="30" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-          <line x1="70" y1="10" x2="70" y2="30" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-          {/* End caps */}
-          <ellipse cx="10" cy="20" rx="4" ry="10" stroke="#22c55e" strokeWidth="2" fill="none" />
-          <ellipse cx="90" cy="20" rx="4" ry="10" stroke="#22c55e" strokeWidth="2" fill="none" />
+          {/* Texture line that shows rotation */}
+          <line x1="40" y1="6" x2="40" y2="30" stroke="#22c55e" strokeWidth="1.5" opacity="0.5" />
         </g>
 
-        {/* Metal frame - wire cage */}
-        <path
-          d="M 14 20 L 14 35 Q 14 40 18 42 L 40 55"
-          stroke="#22c55e"
-          strokeWidth="2"
-          fill="none"
-        />
-        <path
-          d="M 86 20 L 86 35 Q 86 40 82 42 L 60 55"
-          stroke="#22c55e"
-          strokeWidth="2"
-          fill="none"
-        />
+        {/* Frame arms - symmetrical */}
+        <line x1="16" y1="30" x2="16" y2="45" stroke="#22c55e" strokeWidth="2" />
+        <line x1="64" y1="30" x2="64" y2="45" stroke="#22c55e" strokeWidth="2" />
 
-        {/* Frame connector bar */}
-        <line x1="40" y1="55" x2="60" y2="55" stroke="#22c55e" strokeWidth="2" />
+        {/* Frame bottom connector */}
+        <line x1="16" y1="45" x2="64" y2="45" stroke="#22c55e" strokeWidth="2" />
 
-        {/* Handle stem - angled down */}
-        <line x1="50" y1="55" x2="65" y2="100" stroke="#22c55e" strokeWidth="2" />
+        {/* Handle - centered */}
+        <line x1="40" y1="45" x2="40" y2="130" stroke="#22c55e" strokeWidth="2" />
 
         {/* Handle grip */}
         <rect
-          x="60"
-          y="95"
+          x="34"
+          y="90"
           width="12"
-          height="50"
+          height="40"
           rx="6"
           stroke="#22c55e"
           strokeWidth="2"
           fill="none"
         />
-
-        {/* Handle grip texture lines */}
-        <line x1="62" y1="105" x2="70" y2="105" stroke="#22c55e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="62" y1="115" x2="70" y2="115" stroke="#22c55e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="62" y1="125" x2="70" y2="125" stroke="#22c55e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="62" y1="135" x2="70" y2="135" stroke="#22c55e" strokeWidth="1.5" opacity="0.5" />
-
-        {/* Handle end cap */}
-        <ellipse cx="66" cy="145" rx="6" ry="3" stroke="#22c55e" strokeWidth="2" fill="none" />
-
-        {/* Small paint drips */}
-        <circle cx="30" cy="35" r="2" fill="#22c55e" opacity="0.5" />
-        <circle cx="70" cy="33" r="1.5" fill="#22c55e" opacity="0.4" />
       </svg>
     </div>
   );
