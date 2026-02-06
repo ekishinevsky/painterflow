@@ -48,59 +48,77 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-// Paint brush stroke SVG component
+// Paint brush stroke component - sweeps across screen on load
 function PaintBrushStroke() {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setAnimated(true), 300);
+    const timer = setTimeout(() => setAnimated(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <svg
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      viewBox="0 0 800 200"
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <defs>
-        <linearGradient id="brushGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3" />
-          <stop offset="50%" stopColor="#16a34a" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#22c55e" stopOpacity="0.2" />
-        </linearGradient>
-        <filter id="brushTexture">
-          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-      <path
-        d="M-50,100 Q100,60 200,100 T400,90 T600,110 T850,95"
-        fill="none"
-        stroke="url(#brushGradient)"
-        strokeWidth="80"
-        strokeLinecap="round"
-        filter="url(#brushTexture)"
+    <div className="fixed inset-0 pointer-events-none z-0" style={{ top: "25vh" }}>
+      {/* Wide glow background layer */}
+      <div
         style={{
-          strokeDasharray: 1200,
-          strokeDashoffset: animated ? 0 : 1200,
-          transition: "stroke-dashoffset 1.5s ease-out",
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
+          transformOrigin: "left center",
+          left: 0,
+          right: 0,
+          height: "200px",
+          background: "linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.3) 10%, rgba(22, 163, 74, 0.5) 50%, rgba(34, 197, 94, 0.3) 90%, transparent 100%)",
+          filter: "blur(40px)",
+          transition: "transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         }}
       />
-      <path
-        d="M-30,110 Q150,70 250,105 T450,85 T650,115 T870,100"
-        fill="none"
-        stroke="url(#brushGradient)"
-        strokeWidth="40"
-        strokeLinecap="round"
-        filter="url(#brushTexture)"
+      {/* Main brush stroke */}
+      <div
         style={{
-          strokeDasharray: 1200,
-          strokeDashoffset: animated ? 0 : 1200,
-          transition: "stroke-dashoffset 1.8s ease-out 0.2s",
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
+          transformOrigin: "left center",
+          left: 0,
+          right: 0,
+          height: "80px",
+          background: "linear-gradient(90deg, transparent 0%, #22c55e 10%, #16a34a 50%, #22c55e 90%, transparent 100%)",
+          filter: "blur(15px)",
+          transition: "transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s",
         }}
       />
-    </svg>
+      {/* Bright center stroke */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
+          transformOrigin: "left center",
+          left: "5%",
+          right: "5%",
+          height: "40px",
+          background: "linear-gradient(90deg, transparent 0%, #4ade80 15%, #22c55e 50%, #4ade80 85%, transparent 100%)",
+          filter: "blur(5px)",
+          transition: "transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s",
+        }}
+      />
+      {/* Sharp highlight line */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
+          transformOrigin: "left center",
+          left: "10%",
+          right: "10%",
+          height: "8px",
+          background: "linear-gradient(90deg, transparent 0%, #86efac 20%, #4ade80 50%, #86efac 80%, transparent 100%)",
+          transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s",
+        }}
+      />
+    </div>
   );
 }
 
@@ -156,12 +174,10 @@ function Hero() {
         }}
       />
 
-      <div className="max-w-4xl mx-auto text-center relative">
-        {/* Paint brush stroke behind text */}
-        <div className="absolute -inset-x-20 top-0 h-48 -z-10">
-          <PaintBrushStroke />
-        </div>
+      {/* Paint brush stroke - renders behind hero text */}
+      <PaintBrushStroke />
 
+      <div className="max-w-4xl mx-auto text-center relative z-10">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight relative">
           <span
             className="relative inline-block"
