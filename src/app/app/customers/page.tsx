@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 interface Customer {
@@ -13,25 +13,6 @@ interface Customer {
   created_at: string;
 }
 
-declare global {
-  interface Window {
-    google?: {
-      maps?: {
-        places?: {
-          Autocomplete: new (
-            input: HTMLInputElement,
-            options?: { types?: string[] }
-          ) => {
-            addListener: (event: string, callback: () => void) => void;
-            getPlace: () => { formatted_address?: string };
-          };
-        };
-      };
-    };
-    initGooglePlaces?: () => void;
-  }
-}
-
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [name, setName] = useState("");
@@ -41,38 +22,6 @@ export default function CustomersPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const addressInputRef = useRef<HTMLInputElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const autocompleteRef = useRef<any>(null);
-
-  const initAutocomplete = useCallback(() => {
-    if (addressInputRef.current && window.google?.maps?.places?.Autocomplete && !autocompleteRef.current) {
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(
-        addressInputRef.current,
-        { types: ["address"] }
-      );
-      autocompleteRef.current.addListener("place_changed", () => {
-        const place = autocompleteRef.current?.getPlace();
-        if (place?.formatted_address) {
-          setAddress(place.formatted_address);
-        }
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    // Load Google Places API
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-    if (apiKey && !window.google?.maps?.places) {
-      window.initGooglePlaces = initAutocomplete;
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGooglePlaces`;
-      script.async = true;
-      document.head.appendChild(script);
-    } else if (window.google?.maps?.places) {
-      initAutocomplete();
-    }
-  }, [initAutocomplete, showForm]);
 
   const fetchCustomers = async () => {
     const { data } = await supabase
@@ -105,7 +54,6 @@ export default function CustomersPage() {
     setNotes("");
     setSubmitting(false);
     setShowForm(false);
-    autocompleteRef.current = null;
     fetchCustomers();
   };
 
@@ -160,11 +108,10 @@ export default function CustomersPage() {
             <div>
               <label className="block text-sm font-medium text-neutral-300">Address</label>
               <input
-                ref={addressInputRef}
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Start typing an address..."
+                placeholder="123 Main St, City, State ZIP"
                 autoComplete="street-address"
                 className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
