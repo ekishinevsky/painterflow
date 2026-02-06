@@ -256,6 +256,51 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Typewriter effect component
+function Typewriter({ text, delay = 1000 }: { text: string; delay?: number }) {
+  const [displayedText, setDisplayedText] = useState("");
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const startTimer = setTimeout(() => setStarted(true), delay);
+    return () => clearTimeout(startTimer);
+  }, [delay]);
+
+  useEffect(() => {
+    if (!started) return;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [text, started]);
+
+  return (
+    <span>
+      {displayedText}
+      <span
+        className="inline-block w-[2px] h-[1.1em] bg-green-500 ml-1 align-middle"
+        style={{
+          animation: displayedText.length < text.length ? "none" : "blink 1s step-end infinite",
+        }}
+      />
+      <style jsx>{`
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
+    </span>
+  );
+}
+
 function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-neutral-800">
@@ -331,11 +376,13 @@ function Hero() {
               </span>
             </h1>
             <p
-              className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto"
+              className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto font-mono"
               style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
             >
-              Create professional estimates on-site, keep customer notes organized,
-              and close more jobs—all from your phone.
+              <Typewriter
+                text="Create professional estimates on-site, keep customer notes organized, and close more jobs—all from your phone."
+                delay={800}
+              />
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Link
