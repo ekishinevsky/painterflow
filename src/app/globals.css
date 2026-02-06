@@ -48,18 +48,27 @@ body {
 
 .text-gray-700 {
   color: var(--color-text-secondary) !important;
+  font-family: var(--font-noto-sans), system-ui, sans-serif !important;
 }
 
 .text-gray-600 {
   color: var(--color-text-secondary) !important;
+  font-family: var(--font-noto-sans), system-ui, sans-serif !important;
 }
 
 .text-gray-500 {
   color: var(--color-text-muted) !important;
+  font-family: var(--font-noto-sans), system-ui, sans-serif !important;
 }
 
 .text-gray-400 {
   color: var(--color-text-muted) !important;
+  font-family: var(--font-noto-sans), system-ui, sans-serif !important;
+}
+
+/* Apply Noto Sans to all neutral/grey text */
+.text-neutral-400, .text-neutral-500, .text-neutral-600 {
+  font-family: var(--font-noto-sans), system-ui, sans-serif !important;
 }
 
 /* Green primary buttons */

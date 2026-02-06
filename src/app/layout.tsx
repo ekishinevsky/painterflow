@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Space_Grotesk, Noto_Sans } from "next/font/google";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
+});
+
+const notoSans = Noto_Sans({
+  variable: "--font-noto-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${spaceGrotesk.variable} font-sans antialiased bg-black text-white`}
+        className={`${spaceGrotesk.variable} ${notoSans.variable} font-sans antialiased bg-black text-white`}
       >
         <Providers>{children}</Providers>
       </body>

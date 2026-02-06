@@ -48,6 +48,139 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
+// Paint roller that rolls down as you scroll
+function ScrollingPaintRoller() {
+  const [scrollY, setScrollY] = useState(0);
+  const [maxScroll, setMaxScroll] = useState(1);
+  const [viewportHeight, setViewportHeight] = useState(800);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      setMaxScroll(document.documentElement.scrollHeight - window.innerHeight);
+      setViewportHeight(window.innerHeight);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  if (!mounted) return null;
+
+  const scrollProgress = Math.min(scrollY / maxScroll, 1);
+  const rollerRotation = scrollY * 0.5; // Rotate based on scroll
+  const rollerY = 100 + scrollProgress * (viewportHeight - 250); // Move down the viewport
+
+  return (
+    <div
+      className="fixed right-4 sm:right-8 lg:right-12 pointer-events-none z-40 hidden md:block"
+      style={{
+        top: `${rollerY}px`,
+        transition: "top 0.1s ease-out",
+      }}
+    >
+      <svg
+        width="60"
+        height="140"
+        viewBox="0 0 60 140"
+        fill="none"
+        style={{
+          filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.3))",
+        }}
+      >
+        {/* Handle */}
+        <rect
+          x="26"
+          y="70"
+          width="8"
+          height="65"
+          rx="4"
+          stroke="#22c55e"
+          strokeWidth="2"
+          fill="none"
+        />
+
+        {/* Handle grip lines */}
+        <line x1="28" y1="100" x2="32" y2="100" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+        <line x1="28" y1="110" x2="32" y2="110" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+        <line x1="28" y1="120" x2="32" y2="120" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+
+        {/* Connector to roller */}
+        <rect
+          x="27"
+          y="55"
+          width="6"
+          height="18"
+          rx="2"
+          stroke="#22c55e"
+          strokeWidth="2"
+          fill="none"
+        />
+
+        {/* Roller cylinder */}
+        <g style={{ transform: `rotate(${rollerRotation}deg)`, transformOrigin: "30px 30px" }}>
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="25"
+            ry="25"
+            stroke="#22c55e"
+            strokeWidth="2"
+            fill="none"
+          />
+          {/* Roller texture lines */}
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="20"
+            ry="20"
+            stroke="#22c55e"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.4"
+          />
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="15"
+            ry="15"
+            stroke="#22c55e"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.3"
+          />
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="10"
+            ry="10"
+            stroke="#22c55e"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.2"
+          />
+          {/* Cross lines for rotation visibility */}
+          <line x1="30" y1="5" x2="30" y2="55" stroke="#22c55e" strokeWidth="1" opacity="0.3" />
+          <line x1="5" y1="30" x2="55" y2="30" stroke="#22c55e" strokeWidth="1" opacity="0.3" />
+        </g>
+
+        {/* Paint drip effect */}
+        <circle cx="15" cy="55" r="3" fill="#22c55e" opacity="0.6" />
+        <circle cx="45" cy="52" r="2" fill="#22c55e" opacity="0.4" />
+      </svg>
+    </div>
+  );
+}
+
 // Animated rectangle border that draws around content
 function AnimatedBorder({ children }: { children: React.ReactNode }) {
   const [animated, setAnimated] = useState(false);
@@ -641,6 +774,7 @@ function Footer() {
 export default function Home() {
   return (
     <div className="min-h-screen bg-black">
+      <ScrollingPaintRoller />
       <Navbar />
       <main>
         <Hero />
