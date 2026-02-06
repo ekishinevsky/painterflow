@@ -77,63 +77,105 @@ function ScrollingPaintRoller() {
   if (!mounted) return null;
 
   const scrollProgress = Math.min(scrollY / maxScroll, 1);
-  const rollerRotation = -scrollY * 0.3; // Negative = rolling down the wall
-  const rollerY = 100 + scrollProgress * (viewportHeight - 200);
+  const rollerRotation = scrollY * 0.5;
+  const rollerY = 100 + scrollProgress * (viewportHeight - 250);
 
   return (
     <div
-      className="fixed right-6 sm:right-10 lg:right-16 pointer-events-none z-40 hidden md:block"
+      className="fixed right-4 sm:right-8 lg:right-12 pointer-events-none z-40 hidden md:block"
       style={{
         top: `${rollerY}px`,
         transition: "top 0.1s ease-out",
       }}
     >
       <svg
-        width="80"
+        width="60"
         height="140"
-        viewBox="0 0 80 140"
+        viewBox="0 0 60 140"
         fill="none"
         style={{
           filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.3))",
         }}
       >
-        {/* Roller cylinder */}
-        <g style={{ transform: `rotate(${rollerRotation}deg)`, transformOrigin: "40px 18px" }}>
-          <rect
-            x="8"
-            y="6"
-            width="64"
-            height="24"
-            rx="12"
-            stroke="#22c55e"
-            strokeWidth="2"
-            fill="none"
-          />
-          {/* Texture line that shows rotation */}
-          <line x1="40" y1="6" x2="40" y2="30" stroke="#22c55e" strokeWidth="1.5" opacity="0.5" />
-        </g>
-
-        {/* Frame arms - symmetrical */}
-        <line x1="16" y1="30" x2="16" y2="45" stroke="#22c55e" strokeWidth="2" />
-        <line x1="64" y1="30" x2="64" y2="45" stroke="#22c55e" strokeWidth="2" />
-
-        {/* Frame bottom connector */}
-        <line x1="16" y1="45" x2="64" y2="45" stroke="#22c55e" strokeWidth="2" />
-
-        {/* Handle - centered */}
-        <line x1="40" y1="45" x2="40" y2="130" stroke="#22c55e" strokeWidth="2" />
-
-        {/* Handle grip */}
+        {/* Handle */}
         <rect
-          x="34"
-          y="90"
-          width="12"
-          height="40"
-          rx="6"
+          x="26"
+          y="70"
+          width="8"
+          height="65"
+          rx="4"
           stroke="#22c55e"
           strokeWidth="2"
           fill="none"
         />
+
+        {/* Handle grip lines */}
+        <line x1="28" y1="100" x2="32" y2="100" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+        <line x1="28" y1="110" x2="32" y2="110" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+        <line x1="28" y1="120" x2="32" y2="120" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+
+        {/* Connector to roller */}
+        <rect
+          x="27"
+          y="55"
+          width="6"
+          height="18"
+          rx="2"
+          stroke="#22c55e"
+          strokeWidth="2"
+          fill="none"
+        />
+
+        {/* Roller cylinder */}
+        <g style={{ transform: `rotate(${rollerRotation}deg)`, transformOrigin: "30px 30px" }}>
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="25"
+            ry="25"
+            stroke="#22c55e"
+            strokeWidth="2"
+            fill="none"
+          />
+          {/* Roller texture lines */}
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="20"
+            ry="20"
+            stroke="#22c55e"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.4"
+          />
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="15"
+            ry="15"
+            stroke="#22c55e"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.3"
+          />
+          <ellipse
+            cx="30"
+            cy="30"
+            rx="10"
+            ry="10"
+            stroke="#22c55e"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.2"
+          />
+          {/* Cross lines for rotation visibility */}
+          <line x1="30" y1="5" x2="30" y2="55" stroke="#22c55e" strokeWidth="1" opacity="0.3" />
+          <line x1="5" y1="30" x2="55" y2="30" stroke="#22c55e" strokeWidth="1" opacity="0.3" />
+        </g>
+
+        {/* Paint drip effect */}
+        <circle cx="15" cy="55" r="3" fill="#22c55e" opacity="0.6" />
+        <circle cx="45" cy="52" r="2" fill="#22c55e" opacity="0.4" />
       </svg>
     </div>
   );
