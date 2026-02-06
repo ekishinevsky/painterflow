@@ -12,7 +12,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [placeholder, setPlaceholder] = useState("");
+  const [emailPlaceholder, setEmailPlaceholder] = useState("");
+  const [passwordPlaceholder, setPasswordPlaceholder] = useState("");
   const router = useRouter();
   const { user, loading } = useAuth();
 
@@ -22,14 +23,32 @@ export default function LoginPage() {
     }
   }, [user, loading, router]);
 
-  // Typewriter effect for placeholder
+  // Typewriter effect for email placeholder
   useEffect(() => {
     const text = "write your email here";
     let index = 0;
     const timer = setTimeout(() => {
       const interval = setInterval(() => {
         if (index < text.length) {
-          setPlaceholder(text.slice(0, index + 1));
+          setEmailPlaceholder(text.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 50);
+      return () => clearInterval(interval);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Typewriter effect for password placeholder
+  useEffect(() => {
+    const text = "write your password here";
+    let index = 0;
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          setPasswordPlaceholder(text.slice(0, index + 1));
           index++;
         } else {
           clearInterval(interval);
@@ -86,7 +105,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={placeholder}
+              placeholder={emailPlaceholder}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:font-mono placeholder:text-green-500/70"
             />
           </div>
@@ -100,7 +119,8 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder={passwordPlaceholder}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:font-mono placeholder:text-green-500/70"
             />
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
