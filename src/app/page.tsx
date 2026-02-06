@@ -48,33 +48,30 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-// Animated rectangle border that races around before connecting
+// Animated rectangle border that draws around content
 function AnimatedBorder({ children }: { children: React.ReactNode }) {
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="relative inline-block p-8 sm:p-12">
-      {/* CSS for the racing animation */}
-      <style jsx>{`
-        @keyframes drawBorder {
-          0% {
-            stroke-dashoffset: 6000;
-          }
-          100% {
-            stroke-dashoffset: 0;
-          }
-        }
-        .draw-border {
-          animation: drawBorder 3s linear forwards;
-        }
-      `}</style>
-
-      {/* SVG border that draws around */}
+      {/* SVG border that draws itself */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ overflow: "visible" }}
       >
         <defs>
+          <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#4ade80" />
+            <stop offset="50%" stopColor="#22c55e" />
+            <stop offset="100%" stopColor="#16a34a" />
+          </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -89,14 +86,16 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
           width="100%"
           height="100%"
           fill="none"
-          stroke="#22c55e"
-          strokeWidth="8"
+          stroke="rgba(34, 197, 94, 0.3)"
+          strokeWidth="4"
           rx="16"
           ry="16"
           filter="url(#glow)"
-          opacity="0.5"
-          className="draw-border"
-          style={{ strokeDasharray: 2000 }}
+          style={{
+            strokeDasharray: 2000,
+            strokeDashoffset: animated ? 0 : 2000,
+            transition: "stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
         />
 
         {/* Main border */}
@@ -106,12 +105,15 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
           width="100%"
           height="100%"
           fill="none"
-          stroke="#22c55e"
+          stroke="url(#borderGradient)"
           strokeWidth="2"
           rx="16"
           ry="16"
-          className="draw-border"
-          style={{ strokeDasharray: 2000 }}
+          style={{
+            strokeDasharray: 2000,
+            strokeDashoffset: animated ? 0 : 2000,
+            transition: "stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
         />
       </svg>
 
