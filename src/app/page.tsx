@@ -58,64 +58,26 @@ function PaintBrushStroke() {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0" style={{ top: "25vh" }}>
-      {/* Wide glow background layer */}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Subtle glow behind the stroke */}
       <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-32"
         style={{
-          position: "absolute",
-          top: "50%",
-          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
-          transformOrigin: "left center",
-          left: 0,
-          right: 0,
-          height: "200px",
-          background: "linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.3) 10%, rgba(22, 163, 74, 0.5) 50%, rgba(34, 197, 94, 0.3) 90%, transparent 100%)",
-          filter: "blur(40px)",
-          transition: "transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          background: "radial-gradient(ellipse at center, rgba(34, 197, 94, 0.3) 0%, transparent 70%)",
+          filter: "blur(30px)",
+          opacity: animated ? 1 : 0,
+          transition: "opacity 0.8s ease-out 0.3s",
         }}
       />
-      {/* Main brush stroke */}
-      <div
+      {/* Actual brush stroke image */}
+      <img
+        src="/brush-stroke.png"
+        alt=""
+        className="absolute left-1/2 top-1/2 -translate-y-1/2 h-24 sm:h-32 lg:h-40 w-auto max-w-[90vw] object-contain"
         style={{
-          position: "absolute",
-          top: "50%",
-          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
-          transformOrigin: "left center",
-          left: 0,
-          right: 0,
-          height: "80px",
-          background: "linear-gradient(90deg, transparent 0%, #22c55e 10%, #16a34a 50%, #22c55e 90%, transparent 100%)",
-          filter: "blur(15px)",
-          transition: "transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s",
-        }}
-      />
-      {/* Bright center stroke */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
-          transformOrigin: "left center",
-          left: "5%",
-          right: "5%",
-          height: "40px",
-          background: "linear-gradient(90deg, transparent 0%, #4ade80 15%, #22c55e 50%, #4ade80 85%, transparent 100%)",
-          filter: "blur(5px)",
-          transition: "transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s",
-        }}
-      />
-      {/* Sharp highlight line */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          transform: "translateY(-50%) scaleX(" + (animated ? 1 : 0) + ")",
-          transformOrigin: "left center",
-          left: "10%",
-          right: "10%",
-          height: "8px",
-          background: "linear-gradient(90deg, transparent 0%, #86efac 20%, #4ade80 50%, #86efac 80%, transparent 100%)",
-          transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s",
+          transform: `translateX(${animated ? "-50%" : "-150%"}) translateY(-50%) rotate(-3deg)`,
+          transition: "transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          filter: "drop-shadow(0 4px 20px rgba(34, 197, 94, 0.4))",
         }}
       />
     </div>
