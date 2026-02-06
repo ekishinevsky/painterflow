@@ -48,89 +48,111 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-// Abstract flowing gradient - modern and minimal
-function PaintBrushStroke() {
+// Animated rectangle border that draws around content
+function AnimatedBorder({ children }: { children: React.ReactNode }) {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setAnimated(true), 50);
+    const timer = setTimeout(() => setAnimated(true), 200);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {/* Large ambient glow */}
+    <div className="relative inline-block p-8 sm:p-12">
+      {/* SVG border that draws itself */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ overflow: "visible" }}
+      >
+        <defs>
+          <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#4ade80" />
+            <stop offset="50%" stopColor="#22c55e" />
+            <stop offset="100%" stopColor="#16a34a" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Glow layer */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="none"
+          stroke="rgba(34, 197, 94, 0.3)"
+          strokeWidth="4"
+          rx="16"
+          ry="16"
+          filter="url(#glow)"
+          style={{
+            strokeDasharray: 2000,
+            strokeDashoffset: animated ? 0 : 2000,
+            transition: "stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        />
+
+        {/* Main border */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="none"
+          stroke="url(#borderGradient)"
+          strokeWidth="2"
+          rx="16"
+          ry="16"
+          style={{
+            strokeDasharray: 2000,
+            strokeDashoffset: animated ? 0 : 2000,
+            transition: "stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        />
+      </svg>
+
+      {/* Corner accents */}
       <div
-        className="absolute top-1/2 left-1/2 w-[800px] h-[400px] -translate-x-1/2 -translate-y-1/2"
+        className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-green-400 rounded-tl-lg"
         style={{
-          background: "radial-gradient(ellipse at center, rgba(34, 197, 94, 0.15) 0%, transparent 70%)",
           opacity: animated ? 1 : 0,
-          transition: "opacity 1.5s ease-out",
+          transform: animated ? "scale(1)" : "scale(0)",
+          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1.8s",
+        }}
+      />
+      <div
+        className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-green-400 rounded-tr-lg"
+        style={{
+          opacity: animated ? 1 : 0,
+          transform: animated ? "scale(1)" : "scale(0)",
+          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1.9s",
+        }}
+      />
+      <div
+        className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-green-400 rounded-br-lg"
+        style={{
+          opacity: animated ? 1 : 0,
+          transform: animated ? "scale(1)" : "scale(0)",
+          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 2s",
+        }}
+      />
+      <div
+        className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-green-400 rounded-bl-lg"
+        style={{
+          opacity: animated ? 1 : 0,
+          transform: animated ? "scale(1)" : "scale(0)",
+          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 2.1s",
         }}
       />
 
-      {/* Main flowing shape */}
-      <div
-        className="absolute top-1/2 -translate-y-1/2 h-[200px]"
-        style={{
-          left: animated ? "5%" : "-60%",
-          right: animated ? "5%" : "100%",
-          transition: "left 1.4s cubic-bezier(0.16, 1, 0.3, 1), right 1.4s cubic-bezier(0.16, 1, 0.3, 1)",
-          background: "linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.08) 20%, rgba(34, 197, 94, 0.15) 50%, rgba(34, 197, 94, 0.08) 80%, transparent 100%)",
-          filter: "blur(60px)",
-          borderRadius: "50%",
-        }}
-      />
-
-      {/* Bright core streak */}
-      <div
-        className="absolute top-[48%] -translate-y-1/2 h-[3px]"
-        style={{
-          left: animated ? "10%" : "-50%",
-          right: animated ? "10%" : "100%",
-          transition: "left 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, right 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s",
-          background: "linear-gradient(90deg, transparent 0%, #22c55e 15%, #4ade80 50%, #22c55e 85%, transparent 100%)",
-          boxShadow: "0 0 30px 10px rgba(34, 197, 94, 0.4), 0 0 60px 20px rgba(34, 197, 94, 0.2)",
-        }}
-      />
-
-      {/* Secondary accent line */}
-      <div
-        className="absolute top-[54%] -translate-y-1/2 h-[1px]"
-        style={{
-          left: animated ? "15%" : "-40%",
-          right: animated ? "20%" : "100%",
-          transition: "left 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, right 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
-          background: "linear-gradient(90deg, transparent 0%, rgba(74, 222, 128, 0.6) 30%, rgba(74, 222, 128, 0.6) 70%, transparent 100%)",
-          boxShadow: "0 0 20px 5px rgba(74, 222, 128, 0.3)",
-        }}
-      />
-
-      {/* Floating particles */}
-      <div
-        className="absolute top-[42%] left-[25%] w-1 h-1 rounded-full bg-green-400"
-        style={{
-          opacity: animated ? 0.8 : 0,
-          transition: "opacity 0.8s ease-out 0.6s",
-          boxShadow: "0 0 10px 3px rgba(74, 222, 128, 0.5)",
-        }}
-      />
-      <div
-        className="absolute top-[58%] left-[45%] w-1.5 h-1.5 rounded-full bg-green-500"
-        style={{
-          opacity: animated ? 0.6 : 0,
-          transition: "opacity 0.8s ease-out 0.8s",
-          boxShadow: "0 0 15px 5px rgba(34, 197, 94, 0.4)",
-        }}
-      />
-      <div
-        className="absolute top-[40%] left-[70%] w-1 h-1 rounded-full bg-green-300"
-        style={{
-          opacity: animated ? 0.7 : 0,
-          transition: "opacity 0.8s ease-out 1s",
-          boxShadow: "0 0 10px 3px rgba(134, 239, 172, 0.5)",
-        }}
-      />
+      {/* Content */}
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }
@@ -187,50 +209,51 @@ function Hero() {
         }}
       />
 
-      {/* Paint brush stroke - renders behind hero text */}
-      <PaintBrushStroke />
-
-      <div className="max-w-4xl mx-auto text-center relative z-10">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight relative">
-          <span
-            className="relative inline-block"
-            style={{
-              textShadow: "0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)",
-            }}
-          >
-            Quotes & Notes.
-          </span>
-          <br />
-          <span
-            className="text-green-500 relative inline-block"
-            style={{
-              textShadow: "0 4px 20px rgba(34,197,94,0.4), 0 2px 8px rgba(34,197,94,0.3)",
-            }}
-          >
-            Built for Painters.
-          </span>
-        </h1>
-        <p
-          className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto"
-          style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
-        >
-          Create professional estimates on-site, keep customer notes organized,
-          and close more jobs—all from your phone.
-        </p>
-        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/signup"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25"
-          >
-            Start Free
-          </Link>
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-all hover:scale-105"
-          >
-            Log In
-          </Link>
-        </div>
+      <div className="max-w-4xl mx-auto flex justify-center relative z-10">
+        <AnimatedBorder>
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight relative">
+              <span
+                className="relative inline-block"
+                style={{
+                  textShadow: "0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)",
+                }}
+              >
+                Quotes & Notes.
+              </span>
+              <br />
+              <span
+                className="text-green-500 relative inline-block"
+                style={{
+                  textShadow: "0 4px 20px rgba(34,197,94,0.4), 0 2px 8px rgba(34,197,94,0.3)",
+                }}
+              >
+                Built for Painters.
+              </span>
+            </h1>
+            <p
+              className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto"
+              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
+            >
+              Create professional estimates on-site, keep customer notes organized,
+              and close more jobs—all from your phone.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/signup"
+                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25"
+              >
+                Start Free
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-all hover:scale-105"
+              >
+                Log In
+              </Link>
+            </div>
+          </div>
+        </AnimatedBorder>
       </div>
     </section>
   );
