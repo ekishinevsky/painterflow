@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import Link from "next/link";
 
 interface Customer {
   id: string;
@@ -29,9 +28,9 @@ function getCustomerName(job: Job): string {
 }
 
 const statusColors = {
-  scheduled: "bg-yellow-100 text-yellow-800",
-  in_progress: "bg-blue-100 text-blue-800",
-  done: "bg-green-100 text-green-800",
+  scheduled: "bg-yellow-500/20 text-yellow-400",
+  in_progress: "bg-blue-500/20 text-blue-400",
+  done: "bg-green-500/20 text-green-400",
 };
 
 const statusLabels = {
@@ -109,6 +108,12 @@ export default function JobsPage() {
     fetchJobs();
   };
 
+  const handleDeleteJob = async (id: string, customerName: string) => {
+    if (!confirm(`Are you sure you want to delete the job for "${customerName}"? This cannot be undone.`)) return;
+    await supabase.from("jobs").delete().eq("id", id);
+    fetchJobs();
+  };
+
   const today = new Date().toISOString().split("T")[0];
   const upcomingJobs = jobs.filter((j) => j.date >= today && j.status !== "done");
   const pastJobs = jobs.filter((j) => j.date < today || j.status === "done");
@@ -117,11 +122,11 @@ export default function JobsPage() {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Jobs</h1>
+        <h1 className="text-2xl font-bold text-white">Jobs</h1>
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-black hover:bg-green-400 transition-colors"
           >
             New Job
           </button>
@@ -130,13 +135,13 @@ export default function JobsPage() {
 
       {/* New Job Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="mt-6 rounded-lg border border-gray-200 bg-white p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">New Job</h2>
+            <h2 className="text-lg font-semibold text-white">New Job</h2>
             <button
               type="button"
               onClick={() => { setShowForm(false); resetForm(); }}
-              className="text-sm text-gray-400 hover:text-gray-600"
+              className="text-sm text-neutral-400 hover:text-white"
             >
               Close
             </button>
@@ -144,11 +149,11 @@ export default function JobsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Customer</label>
+              <label className="block text-sm font-medium text-neutral-300">Customer</label>
               <select
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               >
                 <option value="">Select customer</option>
                 {customers.map((c) => (
@@ -158,22 +163,22 @@ export default function JobsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date *</label>
+              <label className="block text-sm font-medium text-neutral-300">Date *</label>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <label className="block text-sm font-medium text-neutral-300">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as "scheduled" | "in_progress" | "done")}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               >
                 <option value="scheduled">Scheduled</option>
                 <option value="in_progress">In Progress</option>
@@ -182,11 +187,11 @@ export default function JobsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Finish</label>
+              <label className="block text-sm font-medium text-neutral-300">Finish</label>
               <select
                 value={finish}
                 onChange={(e) => setFinish(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               >
                 <option value="">Select finish</option>
                 {finishOptions.map((f) => (
@@ -196,44 +201,44 @@ export default function JobsPage() {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Areas</label>
+              <label className="block text-sm font-medium text-neutral-300">Areas</label>
               <input
                 value={areas}
                 onChange={(e) => setAreas(e.target.value)}
                 placeholder="e.g., Living room, Kitchen, Master bedroom"
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Paint Colors</label>
+              <label className="block text-sm font-medium text-neutral-300">Paint Colors</label>
               <input
                 value={paintColors}
                 onChange={(e) => setPaintColors(e.target.value)}
                 placeholder="e.g., SW Agreeable Gray, BM White Dove"
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Materials Needed</label>
+              <label className="block text-sm font-medium text-neutral-300">Materials Needed</label>
               <textarea
                 value={materials}
                 onChange={(e) => setMaterials(e.target.value)}
                 rows={2}
                 placeholder="e.g., 3 gal paint, primer, drop cloths..."
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Notes</label>
+              <label className="block text-sm font-medium text-neutral-300">Notes</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
                 placeholder="Any special instructions..."
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
           </div>
@@ -242,14 +247,14 @@ export default function JobsPage() {
             <button
               type="button"
               onClick={() => { setShowForm(false); resetForm(); }}
-              className="rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-400 hover:bg-neutral-800"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-black hover:bg-green-400 disabled:opacity-50 transition-colors"
             >
               {submitting ? "Saving..." : "Save Job"}
             </button>
@@ -259,36 +264,44 @@ export default function JobsPage() {
 
       {/* Upcoming Jobs */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">Upcoming Jobs</h2>
+        <h2 className="text-lg font-semibold text-white mb-3">Upcoming Jobs</h2>
         {upcomingJobs.length === 0 ? (
-          <p className="text-sm text-gray-500">No upcoming jobs.</p>
+          <p className="text-sm text-neutral-500">No upcoming jobs.</p>
         ) : (
           <div className="space-y-3">
             {upcomingJobs.map((job) => (
-              <Link
+              <div
                 key={job.id}
-                href={`/app/jobs/${job.id}`}
-                className="block rounded-lg border border-gray-200 bg-white p-4 hover:shadow-md transition-shadow"
+                className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4"
               >
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-lg font-semibold text-gray-900">{getCustomerName(job)}</p>
-                    <p className="text-sm text-gray-500 mt-0.5">
+                    <p className="text-lg font-semibold text-white">{getCustomerName(job)}</p>
+                    <p className="text-sm text-neutral-400 mt-0.5">
                       {new Date(job.date).toLocaleDateString("en-US", {
                         weekday: "short",
                         month: "short",
                         day: "numeric",
                       })}
                     </p>
+                    {job.notes && (
+                      <p className="mt-2 text-sm text-neutral-500 line-clamp-2">{job.notes}</p>
+                    )}
                   </div>
-                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[job.status]}`}>
-                    {statusLabels[job.status]}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[job.status]}`}>
+                      {statusLabels[job.status]}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteJob(job.id, getCustomerName(job))}
+                      className="px-4 py-2 text-sm font-medium text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                {job.notes && (
-                  <p className="mt-2 text-sm text-gray-600 line-clamp-2">{job.notes}</p>
-                )}
-              </Link>
+              </div>
             ))}
           </div>
         )}
@@ -296,36 +309,44 @@ export default function JobsPage() {
 
       {/* Past Jobs */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">Past Jobs</h2>
+        <h2 className="text-lg font-semibold text-white mb-3">Past Jobs</h2>
         {pastJobs.length === 0 ? (
-          <p className="text-sm text-gray-500">No past jobs.</p>
+          <p className="text-sm text-neutral-500">No past jobs.</p>
         ) : (
           <div className="space-y-3">
             {pastJobs.map((job) => (
-              <Link
+              <div
                 key={job.id}
-                href={`/app/jobs/${job.id}`}
-                className="block rounded-lg border border-gray-200 bg-white p-4 hover:shadow-md transition-shadow opacity-75"
+                className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 opacity-75"
               >
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-lg font-semibold text-gray-900">{getCustomerName(job)}</p>
-                    <p className="text-sm text-gray-500 mt-0.5">
+                    <p className="text-lg font-semibold text-white">{getCustomerName(job)}</p>
+                    <p className="text-sm text-neutral-400 mt-0.5">
                       {new Date(job.date).toLocaleDateString("en-US", {
                         weekday: "short",
                         month: "short",
                         day: "numeric",
                       })}
                     </p>
+                    {job.notes && (
+                      <p className="mt-2 text-sm text-neutral-500 line-clamp-2">{job.notes}</p>
+                    )}
                   </div>
-                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[job.status]}`}>
-                    {statusLabels[job.status]}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[job.status]}`}>
+                      {statusLabels[job.status]}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteJob(job.id, getCustomerName(job))}
+                      className="px-4 py-2 text-sm font-medium text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                {job.notes && (
-                  <p className="mt-2 text-sm text-gray-600 line-clamp-2">{job.notes}</p>
-                )}
-              </Link>
+              </div>
             ))}
           </div>
         )}

@@ -119,6 +119,13 @@ export default function CalendarPage() {
     fetchEvents();
   };
 
+  const handleDeleteEvent = async (id: string, eventTitle: string) => {
+    if (!confirm(`Are you sure you want to delete "${eventTitle}"? This cannot be undone.`)) return;
+    await supabase.from("events").delete().eq("id", id);
+    setSelectedEvent(null);
+    fetchEvents();
+  };
+
   // Build calendar grid
   const daysInMonth = getDaysInMonth(year, month);
   const firstDayOfWeek = new Date(year, month, 1).getDay();
@@ -138,10 +145,10 @@ export default function CalendarPage() {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
+        <h1 className="text-2xl font-bold text-white">Calendar</h1>
         <button
           onClick={() => openNewEvent()}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-black hover:bg-green-400 transition-colors"
         >
           New Event
         </button>
@@ -149,23 +156,23 @@ export default function CalendarPage() {
 
       {/* Month navigation */}
       <div className="mt-6 flex items-center justify-between">
-        <button onClick={prevMonth} className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <button onClick={prevMonth} className="rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 hover:bg-neutral-800">
           &larr; Prev
         </button>
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-white">
           {monthName} {year}
         </h2>
-        <button onClick={nextMonth} className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <button onClick={nextMonth} className="rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 hover:bg-neutral-800">
           Next &rarr;
         </button>
       </div>
 
       {/* Calendar grid */}
-      <div className="mt-4 rounded-md border border-gray-200 bg-white overflow-hidden">
+      <div className="mt-4 rounded-xl border border-neutral-800 bg-neutral-900/50 overflow-hidden">
         {/* Day headers */}
-        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+        <div className="grid grid-cols-7 border-b border-neutral-800 bg-neutral-800/50">
           {dayNames.map((d) => (
-            <div key={d} className="px-1 py-2 text-center text-xs font-medium text-gray-500">
+            <div key={d} className="px-1 py-2 text-center text-xs font-medium text-neutral-400">
               {d}
             </div>
           ))}
@@ -175,7 +182,7 @@ export default function CalendarPage() {
         <div className="grid grid-cols-7">
           {/* Empty cells before first day */}
           {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-            <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-gray-100 bg-gray-50/50" />
+            <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-neutral-800 bg-neutral-900/30" />
           ))}
 
           {Array.from({ length: daysInMonth }).map((_, i) => {
@@ -187,11 +194,11 @@ export default function CalendarPage() {
               <div
                 key={day}
                 onClick={() => openNewEvent(day)}
-                className="min-h-[80px] border-b border-r border-gray-100 p-1 cursor-pointer hover:bg-blue-50/50 transition-colors"
+                className="min-h-[80px] border-b border-r border-neutral-800 p-1 cursor-pointer hover:bg-neutral-800/50 transition-colors"
               >
                 <span
                   className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
-                    isToday ? "bg-blue-600 text-white" : "text-gray-700"
+                    isToday ? "bg-green-500 text-black" : "text-neutral-300"
                   }`}
                 >
                   {day}
@@ -205,13 +212,13 @@ export default function CalendarPage() {
                         setSelectedEvent(evt);
                         setShowForm(false);
                       }}
-                      className="block w-full truncate rounded bg-blue-100 px-1 py-0.5 text-left text-[10px] font-medium text-blue-800 hover:bg-blue-200"
+                      className="block w-full truncate rounded bg-green-500/20 px-1 py-0.5 text-left text-[10px] font-medium text-green-400 hover:bg-green-500/30"
                     >
                       {formatTime(evt.start_at)} {evt.title}
                     </button>
                   ))}
                   {dayEvents.length > 2 && (
-                    <p className="text-[10px] text-gray-500 px-1">+{dayEvents.length - 2} more</p>
+                    <p className="text-[10px] text-neutral-500 px-1">+{dayEvents.length - 2} more</p>
                   )}
                 </div>
               </div>
@@ -222,22 +229,31 @@ export default function CalendarPage() {
 
       {/* Event detail panel */}
       {selectedEvent && !showForm && (
-        <div className="mt-6 rounded-md border border-gray-200 bg-white p-4">
-          <div className="flex items-start justify-between">
+        <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">{selectedEvent.title}</h3>
+              <h3 className="text-lg font-semibold text-white">{selectedEvent.title}</h3>
               {getCustomerName(selectedEvent) && (
-                <p className="text-sm text-gray-600">{getCustomerName(selectedEvent)}</p>
+                <p className="text-sm text-neutral-400">{getCustomerName(selectedEvent)}</p>
               )}
             </div>
-            <button
-              onClick={() => setSelectedEvent(null)}
-              className="text-sm text-gray-400 hover:text-gray-600"
-            >
-              Close
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleDeleteEvent(selectedEvent.id, selectedEvent.title)}
+                className="px-4 py-2 text-sm font-medium text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="px-4 py-2 text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                Close
+              </button>
+            </div>
           </div>
-          <div className="mt-3 space-y-1 text-sm text-gray-600">
+          <div className="mt-3 space-y-1 text-sm text-neutral-400">
             <p>
               {new Date(selectedEvent.start_at).toLocaleDateString()} &middot;{" "}
               {formatTime(selectedEvent.start_at)} &ndash; {formatTime(selectedEvent.end_at)}
@@ -249,34 +265,34 @@ export default function CalendarPage() {
 
       {/* New event form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="mt-6 rounded-md border border-gray-200 bg-white p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">New Event</h3>
+            <h3 className="text-lg font-semibold text-white">New Event</h3>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-sm text-gray-400 hover:text-gray-600"
+              className="text-sm text-neutral-400 hover:text-white"
             >
               Close
             </button>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Title *</label>
+            <label className="block text-sm font-medium text-neutral-300">Title *</label>
             <input
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Customer</label>
+            <label className="block text-sm font-medium text-neutral-300">Customer</label>
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
             >
               <option value="">None</option>
               {customers.map((c) => (
@@ -287,44 +303,44 @@ export default function CalendarPage() {
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date *</label>
+              <label className="block text-sm font-medium text-neutral-300">Date *</label>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Start *</label>
+              <label className="block text-sm font-medium text-neutral-300">Start *</label>
               <input
                 type="time"
                 required
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">End *</label>
+              <label className="block text-sm font-medium text-neutral-300">End *</label>
               <input
                 type="time"
                 required
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Notes</label>
+            <label className="block text-sm font-medium text-neutral-300">Notes</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-white focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
 
@@ -332,14 +348,14 @@ export default function CalendarPage() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-400 hover:bg-neutral-800"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-black hover:bg-green-400 disabled:opacity-50 transition-colors"
             >
               {submitting ? "Saving..." : "Save Event"}
             </button>
