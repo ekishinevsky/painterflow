@@ -44,7 +44,7 @@ function TopBar() {
             alt="Painterflow"
             width={32}
             height={32}
-            className="h-8 w-8 object-contain"
+            className="h-8 w-8 object-contain rounded-lg"
           />
           <span className="text-lg font-semibold text-white">Painterflow</span>
         </Link>

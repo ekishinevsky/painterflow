@@ -1,5 +1,108 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
+// Scroll animation hook
+function useScrollAnimation() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, isVisible };
+}
+
+// Animated section wrapper
+function AnimatedSection({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, isVisible } = useScrollAnimation();
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${className}`}
+      style={{
+        transitionDelay: `${delay}ms`,
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateY(0)" : "translateY(40px)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Paint brush stroke SVG component
+function PaintBrushStroke() {
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      viewBox="0 0 800 200"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <defs>
+        <linearGradient id="brushGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3" />
+          <stop offset="50%" stopColor="#16a34a" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#22c55e" stopOpacity="0.2" />
+        </linearGradient>
+        <filter id="brushTexture">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+      <path
+        d="M-50,100 Q100,60 200,100 T400,90 T600,110 T850,95"
+        fill="none"
+        stroke="url(#brushGradient)"
+        strokeWidth="80"
+        strokeLinecap="round"
+        filter="url(#brushTexture)"
+        style={{
+          strokeDasharray: 1200,
+          strokeDashoffset: animated ? 0 : 1200,
+          transition: "stroke-dashoffset 1.5s ease-out",
+        }}
+      />
+      <path
+        d="M-30,110 Q150,70 250,105 T450,85 T650,115 T870,100"
+        fill="none"
+        stroke="url(#brushGradient)"
+        strokeWidth="40"
+        strokeLinecap="round"
+        filter="url(#brushTexture)"
+        style={{
+          strokeDasharray: 1200,
+          strokeDashoffset: animated ? 0 : 1200,
+          transition: "stroke-dashoffset 1.8s ease-out 0.2s",
+        }}
+      />
+    </svg>
+  );
+}
 
 function Navbar() {
   return (
@@ -12,7 +115,7 @@ function Navbar() {
               alt="Painterflow"
               width={32}
               height={32}
-              className="h-8 w-8 object-contain"
+              className="h-8 w-8 object-contain rounded-lg"
             />
             <span className="text-xl font-semibold text-white">Painterflow</span>
           </Link>
@@ -44,27 +147,57 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
-          Quotes & Notes.
+    <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Subtle background texture */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      <div className="max-w-4xl mx-auto text-center relative">
+        {/* Paint brush stroke behind text */}
+        <div className="absolute -inset-x-20 top-0 h-48 -z-10">
+          <PaintBrushStroke />
+        </div>
+
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight relative">
+          <span
+            className="relative inline-block"
+            style={{
+              textShadow: "0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)",
+            }}
+          >
+            Quotes & Notes.
+          </span>
           <br />
-          <span className="text-green-500">Built for Painters.</span>
+          <span
+            className="text-green-500 relative inline-block"
+            style={{
+              textShadow: "0 4px 20px rgba(34,197,94,0.4), 0 2px 8px rgba(34,197,94,0.3)",
+            }}
+          >
+            Built for Painters.
+          </span>
         </h1>
-        <p className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto">
+        <p
+          className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto"
+          style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
+        >
           Create professional estimates on-site, keep customer notes organized,
           and close more jobs—all from your phone.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/signup"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-colors"
+            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25"
           >
             Start Free
           </Link>
           <Link
             href="/login"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-colors"
+            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-all hover:scale-105"
           >
             Log In
           </Link>
@@ -76,23 +209,25 @@ function Hero() {
 
 function SocialProof() {
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 border-y border-neutral-800">
-      <div className="max-w-4xl mx-auto text-center">
-        <p className="text-sm text-neutral-500 uppercase tracking-wide font-medium">
-          Trusted by painting contractors across the country
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-          <span className="text-2xl font-bold text-white">500+</span>
-          <span className="text-sm text-neutral-400">Active Users</span>
-          <span className="text-neutral-700">|</span>
-          <span className="text-2xl font-bold text-white">$2M+</span>
-          <span className="text-sm text-neutral-400">Quotes Sent</span>
-          <span className="text-neutral-700">|</span>
-          <span className="text-2xl font-bold text-white">4.9</span>
-          <span className="text-sm text-neutral-400">App Rating</span>
+    <AnimatedSection>
+      <section className="py-12 px-4 sm:px-6 lg:px-8 border-y border-neutral-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-sm text-neutral-500 uppercase tracking-wide font-medium">
+            Trusted by painting contractors across the country
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+            <span className="text-2xl font-bold text-white" style={{ textShadow: "0 2px 8px rgba(255,255,255,0.1)" }}>500+</span>
+            <span className="text-sm text-neutral-400">Active Users</span>
+            <span className="text-neutral-700">|</span>
+            <span className="text-2xl font-bold text-white" style={{ textShadow: "0 2px 8px rgba(255,255,255,0.1)" }}>$2M+</span>
+            <span className="text-sm text-neutral-400">Quotes Sent</span>
+            <span className="text-neutral-700">|</span>
+            <span className="text-2xl font-bold text-white" style={{ textShadow: "0 2px 8px rgba(255,255,255,0.1)" }}>4.9</span>
+            <span className="text-sm text-neutral-400">App Rating</span>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </AnimatedSection>
   );
 }
 
@@ -121,23 +256,36 @@ function HowItWorks() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white">
-          How It Works
-        </h2>
-        <p className="mt-4 text-center text-neutral-400 max-w-2xl mx-auto">
-          From walkthrough to signed contract in three simple steps.
-        </p>
+        <AnimatedSection>
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-center text-white"
+            style={{ textShadow: "0 4px 12px rgba(0,0,0,0.5)" }}
+          >
+            How It Works
+          </h2>
+          <p className="mt-4 text-center text-neutral-400 max-w-2xl mx-auto">
+            From walkthrough to signed contract in three simple steps.
+          </p>
+        </AnimatedSection>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {steps.map((item) => (
-            <div key={item.step} className="text-center">
-              <div className="w-12 h-12 mx-auto flex items-center justify-center rounded-full bg-green-500/20 text-green-500 font-bold text-xl">
-                {item.step}
+          {steps.map((item, index) => (
+            <AnimatedSection key={item.step} delay={index * 150}>
+              <div className="text-center">
+                <div
+                  className="w-12 h-12 mx-auto flex items-center justify-center rounded-full bg-green-500/20 text-green-500 font-bold text-xl border border-green-500/30"
+                  style={{ boxShadow: "0 4px 20px rgba(34,197,94,0.2)" }}
+                >
+                  {item.step}
+                </div>
+                <h3
+                  className="mt-6 text-xl font-semibold text-white"
+                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
+                >
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-neutral-400">{item.description}</p>
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-white">
-                {item.title}
-              </h3>
-              <p className="mt-3 text-neutral-400">{item.description}</p>
-            </div>
+            </AnimatedSection>
           ))}
         </div>
       </div>
@@ -186,38 +334,61 @@ function Features() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white">
-          Everything You Need on the Job
-        </h2>
-        <p className="mt-4 text-center text-neutral-400 max-w-2xl mx-auto">
-          Tools built specifically for painting contractors, not generic
-          business software.
-        </p>
+    <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800 relative">
+      {/* Subtle texture overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+      <div className="max-w-6xl mx-auto relative">
+        <AnimatedSection>
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-center text-white"
+            style={{ textShadow: "0 4px 12px rgba(0,0,0,0.5)" }}
+          >
+            Everything You Need on the Job
+          </h2>
+          <p className="mt-4 text-center text-neutral-400 max-w-2xl mx-auto">
+            Tools built specifically for painting contractors, not generic
+            business software.
+          </p>
+        </AnimatedSection>
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature) => (
-            <div key={feature.title} className="bg-neutral-900 p-6 rounded-xl border border-neutral-800">
-              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-green-500/20">
-                <svg
-                  className="w-5 h-5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+          {features.map((feature, index) => (
+            <AnimatedSection key={feature.title} delay={index * 100}>
+              <div
+                className="bg-neutral-900/80 p-6 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all hover:scale-[1.02] hover:shadow-xl"
+                style={{ backdropFilter: "blur(8px)" }}
+              >
+                <div
+                  className="w-10 h-10 flex items-center justify-center rounded-lg bg-green-500/20 border border-green-500/20"
+                  style={{ boxShadow: "0 2px 12px rgba(34,197,94,0.15)" }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={feature.icon}
-                  />
-                </svg>
+                  <svg
+                    className="w-5 h-5 text-green-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d={feature.icon}
+                    />
+                  </svg>
+                </div>
+                <h3
+                  className="mt-4 text-lg font-semibold text-white"
+                  style={{ textShadow: "0 2px 4px rgba(0,0,0,0.2)" }}
+                >
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-neutral-400 text-sm">{feature.description}</p>
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-white">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-neutral-400 text-sm">{feature.description}</p>
-            </div>
+            </AnimatedSection>
           ))}
         </div>
       </div>
@@ -229,57 +400,81 @@ function Pricing() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold text-white">
-          Simple, Honest Pricing
-        </h2>
-        <p className="mt-4 text-neutral-400">
-          One plan. Everything included. No surprises.
-        </p>
-        <div className="mt-12 bg-neutral-900 border-2 border-green-500 rounded-2xl p-8">
-          <p className="text-sm font-medium text-green-500 uppercase tracking-wide">
-            Pro Plan
-          </p>
-          <div className="mt-4 flex items-baseline justify-center gap-2">
-            <span className="text-5xl font-bold text-white">$29</span>
-            <span className="text-neutral-500">/month</span>
-          </div>
-          <ul className="mt-8 space-y-4 text-left max-w-xs mx-auto">
-            {[
-              "Unlimited quotes",
-              "Unlimited customers",
-              "Photo attachments",
-              "Offline mode",
-              "Email & text delivery",
-              "Priority support",
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-3 text-neutral-300">
-                <svg
-                  className="w-5 h-5 text-green-500 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {item}
-              </li>
-            ))}
-          </ul>
-          <Link
-            href="/signup"
-            className="mt-8 inline-flex items-center justify-center w-full px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-colors"
+        <AnimatedSection>
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-white"
+            style={{ textShadow: "0 4px 12px rgba(0,0,0,0.5)" }}
           >
-            Start Your Free Trial
-          </Link>
-          <p className="mt-4 text-sm text-neutral-500">
-            14-day free trial. No credit card required.
+            Simple, Honest Pricing
+          </h2>
+          <p className="mt-4 text-neutral-400">
+            One plan. Everything included. No surprises.
           </p>
-        </div>
+        </AnimatedSection>
+        <AnimatedSection delay={200}>
+          <div
+            className="mt-12 bg-neutral-900/80 border-2 border-green-500 rounded-2xl p-8 relative overflow-hidden"
+            style={{
+              boxShadow: "0 0 60px rgba(34,197,94,0.15), 0 4px 20px rgba(0,0,0,0.3)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {/* Subtle glow effect */}
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-green-500/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-green-500/10 rounded-full blur-3xl" />
+
+            <div className="relative">
+              <p className="text-sm font-medium text-green-500 uppercase tracking-wide">
+                Pro Plan
+              </p>
+              <div className="mt-4 flex items-baseline justify-center gap-2">
+                <span
+                  className="text-5xl font-bold text-white"
+                  style={{ textShadow: "0 4px 12px rgba(255,255,255,0.1)" }}
+                >
+                  $29
+                </span>
+                <span className="text-neutral-500">/month</span>
+              </div>
+              <ul className="mt-8 space-y-4 text-left max-w-xs mx-auto">
+                {[
+                  "Unlimited quotes",
+                  "Unlimited customers",
+                  "Photo attachments",
+                  "Offline mode",
+                  "Email & text delivery",
+                  "Priority support",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-neutral-300">
+                    <svg
+                      className="w-5 h-5 text-green-500 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup"
+                className="mt-8 inline-flex items-center justify-center w-full px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25"
+              >
+                Start Your Free Trial
+              </Link>
+              <p className="mt-4 text-sm text-neutral-500">
+                14-day free trial. No credit card required.
+              </p>
+            </div>
+          </div>
+        </AnimatedSection>
       </div>
     </section>
   );
@@ -312,20 +507,27 @@ function FAQ() {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white">
-          Questions? We&apos;ve Got Answers.
-        </h2>
+        <AnimatedSection>
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-center text-white"
+            style={{ textShadow: "0 4px 12px rgba(0,0,0,0.5)" }}
+          >
+            Questions? We&apos;ve Got Answers.
+          </h2>
+        </AnimatedSection>
         <div className="mt-12 space-y-6">
-          {faqs.map((faq) => (
-            <div
-              key={faq.question}
-              className="bg-neutral-900 p-6 rounded-xl border border-neutral-800"
-            >
-              <h3 className="text-lg font-semibold text-white">
-                {faq.question}
-              </h3>
-              <p className="mt-3 text-neutral-400">{faq.answer}</p>
-            </div>
+          {faqs.map((faq, index) => (
+            <AnimatedSection key={faq.question} delay={index * 100}>
+              <div className="bg-neutral-900/80 p-6 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all">
+                <h3
+                  className="text-lg font-semibold text-white"
+                  style={{ textShadow: "0 2px 4px rgba(0,0,0,0.2)" }}
+                >
+                  {faq.question}
+                </h3>
+                <p className="mt-3 text-neutral-400">{faq.answer}</p>
+              </div>
+            </AnimatedSection>
           ))}
         </div>
       </div>
@@ -335,28 +537,40 @@ function FAQ() {
 
 function FinalCTA() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-green-500">
-      <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold text-black">
-          Ready to Win More Jobs?
-        </h2>
-        <p className="mt-4 text-green-900 text-lg">
-          Join hundreds of painting contractors who save time and close more
-          deals with Painterflow.
-        </p>
-        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/signup"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-green-500 bg-black rounded-lg hover:bg-neutral-900 transition-colors"
+    <AnimatedSection>
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-green-500 relative overflow-hidden">
+        {/* Texture overlay */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+        <div className="max-w-3xl mx-auto text-center relative">
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-black"
+            style={{ textShadow: "0 2px 8px rgba(255,255,255,0.2)" }}
           >
-            Start Your Free Trial
-          </Link>
+            Ready to Win More Jobs?
+          </h2>
+          <p className="mt-4 text-green-900 text-lg">
+            Join hundreds of painting contractors who save time and close more
+            deals with Painterflow.
+          </p>
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-green-500 bg-black rounded-lg hover:bg-neutral-900 transition-all hover:scale-105"
+            >
+              Start Your Free Trial
+            </Link>
+          </div>
+          <p className="mt-6 text-green-800 text-sm">
+            No credit card required. Get started in 2 minutes.
+          </p>
         </div>
-        <p className="mt-6 text-green-800 text-sm">
-          No credit card required. Get started in 2 minutes.
-        </p>
-      </div>
-    </section>
+      </section>
+    </AnimatedSection>
   );
 }
 
@@ -371,7 +585,7 @@ function Footer() {
               alt="Painterflow"
               width={24}
               height={24}
-              className="h-6 w-6 object-contain"
+              className="h-6 w-6 object-contain rounded-md"
             />
             <span className="text-xl font-semibold text-white">Painterflow</span>
           </div>

@@ -57,7 +57,7 @@ export default function SignupPage() {
             alt="Painterflow"
             width={64}
             height={64}
-            className="h-16 w-16 object-contain"
+            className="h-16 w-16 object-contain rounded-xl"
           />
           <h1 className="mt-4 text-2xl font-bold text-center text-white">Sign up for Painterflow</h1>
         </div>
