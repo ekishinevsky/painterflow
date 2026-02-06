@@ -257,7 +257,7 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
 }
 
 // Typewriter effect component
-function Typewriter({ text, delay = 1000 }: { text: string; delay?: number }) {
+function Typewriter({ text, delay = 1000, showCursor = true }: { text: string; delay?: number; showCursor?: boolean }) {
   const [displayedText, setDisplayedText] = useState("");
   const [started, setStarted] = useState(false);
 
@@ -277,26 +277,30 @@ function Typewriter({ text, delay = 1000 }: { text: string; delay?: number }) {
       } else {
         clearInterval(interval);
       }
-    }, 30);
+    }, 50);
 
     return () => clearInterval(interval);
   }, [text, started]);
 
   return (
     <span>
-      {displayedText}
-      <span
-        className="inline-block w-[2px] h-[1.1em] bg-green-500 ml-1 align-middle"
-        style={{
-          animation: displayedText.length < text.length ? "none" : "blink 1s step-end infinite",
-        }}
-      />
-      <style jsx>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-      `}</style>
+      {displayedText || "\u00A0"}
+      {showCursor && (
+        <>
+          <span
+            className="inline-block w-[2px] h-[1.1em] bg-green-500 ml-1 align-middle"
+            style={{
+              animation: displayedText.length < text.length ? "none" : "blink 1s step-end infinite",
+            }}
+          />
+          <style jsx>{`
+            @keyframes blink {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0; }
+            }
+          `}</style>
+        </>
+      )}
     </span>
   );
 }
@@ -376,26 +380,24 @@ function Hero() {
               </span>
             </h1>
             <p
-              className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto font-mono"
+              className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto"
               style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
             >
-              <Typewriter
-                text="Create professional estimates on-site, keep customer notes organized, and close more jobs—all from your phone."
-                delay={800}
-              />
+              Create professional estimates on-site, keep customer notes organized,
+              and close more jobs—all from your phone.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/signup"
-                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25"
+                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-green-500 rounded-lg hover:bg-green-400 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25 min-w-[140px]"
               >
-                Start Free
+                <Typewriter text="Start Free" delay={800} showCursor={false} />
               </Link>
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-all hover:scale-105"
+                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-transparent border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-all hover:scale-105 min-w-[140px]"
               >
-                Log In
+                <Typewriter text="Log In" delay={800} showCursor={false} />
               </Link>
             </div>
           </div>
