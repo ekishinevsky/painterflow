@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [placeholder, setPlaceholder] = useState("");
   const router = useRouter();
   const { user, loading } = useAuth();
 
@@ -20,6 +21,24 @@ export default function LoginPage() {
       router.replace("/app");
     }
   }, [user, loading, router]);
+
+  // Typewriter effect for placeholder
+  useEffect(() => {
+    const text = "write your email here";
+    let index = 0;
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          setPlaceholder(text.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 50);
+      return () => clearInterval(interval);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,7 +86,8 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder={placeholder}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:font-mono placeholder:text-green-500/70"
             />
           </div>
           <div>
