@@ -48,18 +48,50 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-// Animated rectangle border that draws around content
+// Animated rectangle border that races around before connecting
 function AnimatedBorder({ children }: { children: React.ReactNode }) {
-  const [animated, setAnimated] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setAnimated(true), 200);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="relative inline-block p-8 sm:p-12">
-      {/* SVG border that draws itself */}
+      {/* CSS for the racing animation */}
+      <style jsx>{`
+        @keyframes race {
+          0% {
+            stroke-dashoffset: 2000;
+          }
+          30% {
+            stroke-dashoffset: 0;
+          }
+          35% {
+            stroke-dashoffset: 0;
+          }
+          65% {
+            stroke-dashoffset: -2000;
+          }
+          70% {
+            stroke-dashoffset: -2000;
+          }
+          100% {
+            stroke-dashoffset: -4000;
+          }
+        }
+        @keyframes fadeIn {
+          0%, 90% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+        .racing-border {
+          animation: race 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .final-border {
+          opacity: 0;
+          animation: fadeIn 2.5s ease-out forwards;
+        }
+      `}</style>
+
+      {/* SVG border that races around */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ overflow: "visible" }}
@@ -71,7 +103,7 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
             <stop offset="100%" stopColor="#16a34a" />
           </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -79,7 +111,50 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
           </filter>
         </defs>
 
-        {/* Glow layer */}
+        {/* Racing glow layer */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="none"
+          stroke="rgba(34, 197, 94, 0.4)"
+          strokeWidth="6"
+          rx="16"
+          ry="16"
+          filter="url(#glow)"
+          className="racing-border"
+          style={{ strokeDasharray: 2000 }}
+        />
+
+        {/* Racing main border */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="none"
+          stroke="url(#borderGradient)"
+          strokeWidth="2"
+          rx="16"
+          ry="16"
+          className="racing-border"
+          style={{ strokeDasharray: 2000 }}
+        />
+
+        {/* Final static border that fades in */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="none"
+          stroke="url(#borderGradient)"
+          strokeWidth="2"
+          rx="16"
+          ry="16"
+          className="final-border"
+        />
         <rect
           x="0"
           y="0"
@@ -91,65 +166,9 @@ function AnimatedBorder({ children }: { children: React.ReactNode }) {
           rx="16"
           ry="16"
           filter="url(#glow)"
-          style={{
-            strokeDasharray: 2000,
-            strokeDashoffset: animated ? 0 : 2000,
-            transition: "stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)",
-          }}
-        />
-
-        {/* Main border */}
-        <rect
-          x="0"
-          y="0"
-          width="100%"
-          height="100%"
-          fill="none"
-          stroke="url(#borderGradient)"
-          strokeWidth="2"
-          rx="16"
-          ry="16"
-          style={{
-            strokeDasharray: 2000,
-            strokeDashoffset: animated ? 0 : 2000,
-            transition: "stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1)",
-          }}
+          className="final-border"
         />
       </svg>
-
-      {/* Corner accents */}
-      <div
-        className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-green-400 rounded-tl-lg"
-        style={{
-          opacity: animated ? 1 : 0,
-          transform: animated ? "scale(1)" : "scale(0)",
-          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1.8s",
-        }}
-      />
-      <div
-        className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-green-400 rounded-tr-lg"
-        style={{
-          opacity: animated ? 1 : 0,
-          transform: animated ? "scale(1)" : "scale(0)",
-          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1.9s",
-        }}
-      />
-      <div
-        className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-green-400 rounded-br-lg"
-        style={{
-          opacity: animated ? 1 : 0,
-          transform: animated ? "scale(1)" : "scale(0)",
-          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 2s",
-        }}
-      />
-      <div
-        className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-green-400 rounded-bl-lg"
-        style={{
-          opacity: animated ? 1 : 0,
-          transform: animated ? "scale(1)" : "scale(0)",
-          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 2.1s",
-        }}
-      />
 
       {/* Content */}
       <div className="relative z-10">{children}</div>
