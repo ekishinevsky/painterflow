@@ -321,12 +321,12 @@ function Navbar() {
             <span className="text-xl font-semibold text-white">Painterflow</span>
           </Link>
           <div className="flex items-center gap-6">
-            <Link
-              href="/features"
+            <a
+              href="#features"
               className="text-sm text-neutral-400 hover:text-white hidden sm:block transition-colors"
             >
               Features
-            </Link>
+            </a>
             <Link
               href="/pricing"
               className="text-sm text-neutral-400 hover:text-white hidden sm:block transition-colors"
@@ -528,7 +528,7 @@ function Features() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800 relative">
+    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 border-t border-neutral-800 relative scroll-mt-20">
       {/* Subtle texture overlay */}
       <div
         className="absolute inset-0 opacity-[0.02]"
@@ -783,12 +783,12 @@ function Footer() {
             <span className="text-xl font-semibold text-white">Painterflow</span>
           </div>
           <div className="flex gap-6">
-            <Link
-              href="/features"
+            <a
+              href="#features"
               className="text-sm text-neutral-400 hover:text-white transition-colors"
             >
               Features
-            </Link>
+            </a>
             <Link
               href="/pricing"
               className="text-sm text-neutral-400 hover:text-white transition-colors"
