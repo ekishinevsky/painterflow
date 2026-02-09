@@ -10,6 +10,7 @@ const tabs = [
   { label: "Dashboard", href: "/app" },
   { label: "Customers", href: "/app/customers" },
   { label: "Estimates", href: "/app/estimates" },
+  { label: "Quotes", href: "/app/quotes" },
   { label: "Calendar", href: "/app/calendar" },
   { label: "Jobs", href: "/app/jobs" },
 ];
