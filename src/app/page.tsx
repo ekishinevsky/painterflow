@@ -496,40 +496,34 @@ function HowItWorks() {
 function Features() {
   const features = [
     {
-      title: "Mobile-First Design",
-      description:
-        "Built for the job site. Works great on any phone, even with paint on your hands.",
-      icon: "M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z",
+      title: "Dashboard",
+      description: "Get a complete overview of your business with real-time analytics, quick links, and growth tracking.",
+      image: "/features/dashboard.jpg",
     },
     {
-      title: "Quick Estimates",
-      description:
-        "Create professional quotes in minutes with your custom pricing and templates.",
-      icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z",
+      title: "Customer Management",
+      description: "Keep all your customer details organized—contact info, addresses, and notes in one place.",
+      image: "/features/customers.jpg",
     },
     {
-      title: "Customer Notes",
-      description:
-        "Keep paint colors, surface conditions, and special requests all in one place.",
-      icon: "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
+      title: "Estimates",
+      description: "Create detailed estimates with line items, quantities, and rates. Calculate totals instantly.",
+      image: "/features/estimates.jpg",
     },
     {
-      title: "Photo Attachments",
-      description:
-        "Snap photos of the work area and attach them directly to quotes and notes.",
-      icon: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z",
+      title: "Professional Quotes",
+      description: "Generate beautiful quotes from estimates with tax calculations, terms, and validity periods.",
+      image: "/features/quote.jpg",
+    },
+    {
+      title: "Calendar",
+      description: "Schedule and track all your jobs with an intuitive calendar view. Never miss an appointment.",
+      image: "/features/calendar.jpg",
     },
     {
       title: "Job Tracking",
-      description:
-        "See all your jobs at a glance—pending quotes, scheduled work, and completed projects.",
-      icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
-    },
-    {
-      title: "Offline Mode",
-      description:
-        "No signal in the basement? No problem. Your data syncs when you're back online.",
-      icon: "M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414",
+      description: "Manage upcoming and past jobs with status tracking, notes, and customer details.",
+      image: "/features/jobs.jpg",
     },
   ];
 
@@ -555,38 +549,37 @@ function Features() {
             business software.
           </p>
         </AnimatedSection>
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-16 space-y-24">
           {features.map((feature, index) => (
             <AnimatedSection key={feature.title} delay={index * 100}>
-              <div
-                className="bg-neutral-900/80 p-6 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all hover:scale-[1.02] hover:shadow-xl"
-                style={{ backdropFilter: "blur(8px)" }}
-              >
-                <div
-                  className="w-10 h-10 flex items-center justify-center rounded-lg bg-green-500/20 border border-green-500/20"
-                  style={{ boxShadow: "0 2px 12px rgba(34,197,94,0.15)" }}
-                >
-                  <svg
-                    className="w-5 h-5 text-green-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+              <div className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 lg:gap-12 items-center`}>
+                {/* Text content */}
+                <div className="flex-1 text-center lg:text-left">
+                  <h3
+                    className="text-2xl sm:text-3xl font-bold text-white"
+                    style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d={feature.icon}
-                    />
-                  </svg>
+                    {feature.title}
+                  </h3>
+                  <p className="mt-4 text-lg text-neutral-400">{feature.description}</p>
                 </div>
-                <h3
-                  className="mt-4 text-lg font-semibold text-white"
-                  style={{ textShadow: "0 2px 4px rgba(0,0,0,0.2)" }}
-                >
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-neutral-400 text-sm">{feature.description}</p>
+                {/* Image */}
+                <div className="flex-1 w-full">
+                  <div
+                    className="relative rounded-xl overflow-hidden border border-neutral-800 shadow-2xl"
+                    style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(34, 197, 94, 0.1)" }}
+                  >
+                    <Image
+                      src={feature.image}
+                      alt={feature.title}
+                      width={800}
+                      height={500}
+                      className="w-full h-auto"
+                    />
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                  </div>
+                </div>
               </div>
             </AnimatedSection>
           ))}
