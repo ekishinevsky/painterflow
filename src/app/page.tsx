@@ -327,12 +327,12 @@ function Navbar() {
             >
               Features
             </a>
-            <Link
-              href="/pricing"
+            <a
+              href="#pricing"
               className="text-sm text-neutral-400 hover:text-white hidden sm:block transition-colors"
             >
               Pricing
-            </Link>
+            </a>
             <Link
               href="/login"
               className="text-sm font-medium text-green-500 hover:text-green-400 transition-colors"
@@ -591,7 +591,7 @@ function Features() {
 
 function Pricing() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 scroll-mt-20">
       <div className="max-w-3xl mx-auto text-center">
         <AnimatedSection>
           <h2
@@ -789,12 +789,12 @@ function Footer() {
             >
               Features
             </a>
-            <Link
-              href="/pricing"
+            <a
+              href="#pricing"
               className="text-sm text-neutral-400 hover:text-white transition-colors"
             >
               Pricing
-            </Link>
+            </a>
             <Link
               href="/login"
               className="text-sm text-neutral-400 hover:text-white transition-colors"
